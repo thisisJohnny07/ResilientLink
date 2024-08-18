@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464804066352",
+    "project_id": "resilienlink",
+    "storage_bucket": "resilienlink.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464804066352:android:2513fd186a74783aed29f5",
+        "android_client_info": {
+          "package_name": "com.example.resilientlink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK4-IHJ4FBs3fPho_sELtUCBjTQRaetnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

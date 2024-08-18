@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:resilientlink/models/weather_model.dart';
 import 'package:resilientlink/services/weather_services.dart';
@@ -59,18 +60,111 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_weather?.cityName ?? "loading city..."),
-              Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
-              Text("${_weather?.temperature.round()}°C"),
-              Text(_weather?.mainCondition ?? "")
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    _weather?.cityName ?? "loading city...",
+                    style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(DateFormat('EEEE, d MMMM').format(DateTime.now())),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 150,
+                        height: 150,
+                        child: Lottie.asset(
+                            getWeatherAnimation(_weather?.mainCondition)),
+                      ),
+                      Container(
+                        height: 80,
+                        width: 1,
+                        color: Colors.black,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${_weather?.temperature.round()}°C",
+                            style: const TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.bold),
+                          ),
+                          Text(_weather?.mainCondition ?? ""),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFF015490),
+                borderRadius:
+                    BorderRadius.circular(10), // Adjust the radius as needed
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF015490),
+                      borderRadius: BorderRadius.circular(
+                          10), // Adjust the radius as needed
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF015490),
+                      borderRadius: BorderRadius.circular(
+                          10), // Adjust the radius as needed
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF015490),
+                      borderRadius: BorderRadius.circular(
+                          10), // Adjust the radius as needed
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Row(
+              children: [Text("Advisories")],
+            )
+          ],
         ),
       ),
     );

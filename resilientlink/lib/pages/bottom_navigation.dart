@@ -25,21 +25,46 @@ class _BottomNavigationState extends State<BottomNavigation> {
     });
   }
 
+  void _navigateToHome() {
+    setState(() {
+      _selectedIndex = 0; // Index for HomePage
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bottom Navigation Example'),
+        backgroundColor: Colors.white,
+        title: GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedIndex = 0; // Index for HomePage
+            });
+          },
+          child: Image.asset(
+            'images/logo.png',
+            height: 60,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.chat),
+            color: const Color(0xFF015490),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.volunteer_activism),
             label: 'Donation',
           ),
           BottomNavigationBarItem(
@@ -48,7 +73,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: const Color(0xFF015490),
         onTap: _onItemTapped,
       ),
     );
