@@ -44,12 +44,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
           },
           child: Image.asset(
             'images/logo.png',
-            height: 60,
+            height: 40,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.chat),
+            icon: const Icon(Icons.contact_support),
             color: const Color(0xFF015490),
             onPressed: () {},
           ),

@@ -66,107 +66,253 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    _weather?.cityName ?? "loading city...",
-                    style: const TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(DateFormat('EEEE, d MMMM').format(DateTime.now())),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 150,
-                        height: 150,
-                        child: Lottie.asset(
-                            getWeatherAnimation(_weather?.mainCondition)),
-                      ),
-                      Container(
-                        height: 80,
-                        width: 1,
-                        color: Colors.black,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${_weather?.temperature.round()}°C",
-                            style: const TextStyle(
-                                fontSize: 40, fontWeight: FontWeight.bold),
-                          ),
-                          Text(_weather?.mainCondition ?? ""),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xFF015490),
-                borderRadius:
-                    BorderRadius.circular(10), // Adjust the radius as needed
-              ),
-            ),
+            _WeatherUpdates(),
             const SizedBox(
-              height: 10,
+              height: 25,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF015490),
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF015490),
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF015490),
-                      borderRadius: BorderRadius.circular(
-                          10), // Adjust the radius as needed
-                    ),
-                  ),
-                ),
-              ],
+            _buttons(),
+            const SizedBox(
+              height: 25,
             ),
-            const Row(
-              children: [Text("Advisories")],
-            )
+            _advisories(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _WeatherUpdates() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            _weather?.cityName ?? "loading city...",
+            style: const TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 20,
+            ),
+          ),
+          Text(DateFormat('EEEE, d MMMM').format(DateTime.now())),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 150,
+                height: 150,
+                child:
+                    Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
+              ),
+              Container(
+                height: 80,
+                width: 1,
+                color: Colors.black,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "${_weather?.temperature.round() ?? "0"}°C",
+                    style: const TextStyle(
+                        fontSize: 40, fontWeight: FontWeight.bold),
+                  ),
+                  Text(_weather?.mainCondition ?? ""),
+                ],
+              ),
+            ],
+          ),
+          Container(
+            height: 80,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFF015490),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Min: 10°C",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      "Max: 20°C",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Wind: 0.42m/s",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      "Humidity: 92%",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Three Buttons
+  Widget _buttons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.phone,
+                    color: Color(0xFF011222),
+                    size: 50,
+                  ),
+                  Text(
+                    "Hotlines",
+                    style: TextStyle(fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.volunteer_activism,
+                    color: Color(0xFF011222),
+                    size: 50,
+                  ),
+                  Text(
+                    "Donate",
+                    style: TextStyle(fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.directions_run,
+                    color: Color(0xFF011222),
+                    size: 50,
+                  ),
+                  Text(
+                    "Evacuation",
+                    style: TextStyle(fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _advisories() {
+    return Row(
+      children: [
+        const Text(
+          "Advisories",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Expanded(
+          child: Container(
+            height: 5,
+            decoration: const BoxDecoration(
+              color: Color(0xFF015490),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
