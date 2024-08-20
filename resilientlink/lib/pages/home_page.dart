@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:resilientlink/models/weather_model.dart';
 import 'package:resilientlink/services/weather_services.dart';
+import 'package:weather/weather.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,15 +14,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _weatherServices = WeatherServices("bc0b23f74b8e3eefb32e919b460df7ae");
+  WeatherData? _weatherData;
+  final WeatherFactory _wf = WeatherFactory("bc0b23f74b8e3eefb32e919b460df7ae");
   Weather? _weather;
 
   _fetchWeather() async {
     String cityName = await _weatherServices.getCurrentCity();
 
     try {
-      final weather = await _weatherServices.getWeather(cityName);
+      final weatherData = await _weatherServices.getWeather(cityName);
       setState(() {
-        _weather = weather;
+        _weatherData = weatherData;
+      });
+      _wf.currentWeatherByCityName(cityName).then((w) {
+        setState(() {
+          _weather = w;
+        });
       });
     } catch (e) {
       print(e);
@@ -61,21 +69,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _WeatherUpdates(),
-            const SizedBox(
-              height: 25,
-            ),
-            _buttons(),
-            const SizedBox(
-              height: 25,
-            ),
-            _advisories(),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _WeatherUpdates(),
+              const SizedBox(
+                height: 25,
+              ),
+              _buttons(),
+              const SizedBox(
+                height: 25,
+              ),
+              _advisories(),
+            ],
+          ),
         ),
       ),
     );
@@ -86,7 +96,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           Text(
-            _weather?.cityName ?? "loading city...",
+            _weatherData?.cityName ?? "loading city...",
             style: const TextStyle(
               fontFamily: 'Roboto',
               fontSize: 20,
@@ -100,8 +110,8 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 width: 150,
                 height: 150,
-                child:
-                    Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
+                child: Lottie.asset(
+                    getWeatherAnimation(_weatherData?.mainCondition)),
               ),
               Container(
                 height: 80,
@@ -112,11 +122,11 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "${_weather?.temperature.round() ?? "0"}°C",
+                    "${_weatherData?.temperature.round() ?? "0"}°C",
                     style: const TextStyle(
                         fontSize: 40, fontWeight: FontWeight.bold),
                   ),
-                  Text(_weather?.mainCondition ?? ""),
+                  Text(_weatherData?.mainCondition ?? ""),
                 ],
               ),
             ],
@@ -125,48 +135,51 @@ class _HomePageState extends State<HomePage> {
             height: 80,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFF015490),
-              borderRadius: BorderRadius.circular(10),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(5), bottomLeft: Radius.circular(5)),
+              border: const Border(
+                left: BorderSide(
+                  color: Color(0xFF015490),
+                  width: 5,
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 0.5,
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
             ),
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "Min: 10°C",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      "Max: ${_weather?.tempMax?.celsius?.toStringAsFixed(2) ?? "0"} °C",
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
                     ),
                     Text(
-                      "Max: 20°C",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    )
+                      "Min: ${_weather?.tempMin?.celsius?.toStringAsFixed(2) ?? "0"} °C",
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
+                    ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "Wind: 0.42m/s",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      "Wind: ${_weather?.windSpeed?.toStringAsFixed(2) ?? "0"} m/s",
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
                     ),
                     Text(
-                      "Humidity: 92%",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    )
+                      "Humidity: ${_weather?.humidity?.toStringAsFixed(2) ?? "0"} %",
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
+                    ),
                   ],
                 )
               ],
