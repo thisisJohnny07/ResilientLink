@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:resilientlink/Widget/button.dart';
 import 'package:resilientlink/Widget/snackbar.dart';
 import 'package:resilientlink/Widget/text_field.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
@@ -86,10 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ),
-              MyButton(
-                onTab: loginUser,
-                text: "Log In",
               ),
               const SizedBox(
                 height: 15,

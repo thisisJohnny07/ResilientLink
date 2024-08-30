@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Button extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTab;
-  final String label;
-
-  const Button({
-    super.key,
-    required this.onTab,
-    required this.label,
-    required this.icon,
-  });
+class Buttons extends StatelessWidget {
+  const Buttons({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: onTab,
+        onTap: () {},
         child: Container(
           height: 100,
           decoration: BoxDecoration(
@@ -31,17 +22,17 @@ class Button extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Icon(
-                icon,
-                color: const Color(0xFF015490),
+                Icons.phone,
+                color: Color(0xFF011222),
                 size: 50,
               ),
               Text(
-                label,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF015490)),
+                "Hotlines",
+                style: TextStyle(fontSize: 16),
               )
             ],
           ),

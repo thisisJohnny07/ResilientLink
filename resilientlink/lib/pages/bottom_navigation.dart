@@ -35,7 +35,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF0F8FF),
         title: GestureDetector(
           onTap: () {
             setState(() {
