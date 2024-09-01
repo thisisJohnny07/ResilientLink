@@ -338,9 +338,10 @@ class _HomePageState extends State<HomePage> {
                                     color: Color(0xFF015490),
                                     size: 40,
                                   ),
-                                  const SizedBox(width: 2),
+                                  const SizedBox(width: 5),
                                   Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         advisory['title'] ?? 'No Title',

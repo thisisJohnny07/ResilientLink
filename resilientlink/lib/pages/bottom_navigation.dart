@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:resilientlink/pages/donations.dart';
 import 'package:resilientlink/pages/home_page.dart';
+import 'package:resilientlink/pages/messages.dart';
 import 'package:resilientlink/pages/profile.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -51,7 +52,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
           IconButton(
             icon: const Icon(Icons.contact_support),
             color: const Color(0xFF015490),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Messages()));
+            },
           ),
         ],
       ),

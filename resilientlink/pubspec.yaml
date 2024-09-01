@@ -47,6 +47,9 @@ dependencies:
   google_sign_in: ^6.2.1
   weather: ^3.1.1
   cached_network_image: ^3.4.1
+  flutter_local_notifications: ^17.2.2
+  firebase_messaging: ^14.7.10
+ 
 
 dev_dependencies:
   flutter_test:
