@@ -18,15 +18,15 @@ class Button extends StatelessWidget {
       child: GestureDetector(
         onTap: onTab,
         child: Container(
-          height: 100,
+          height: 80,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
                 spreadRadius: 1,
-                blurRadius: 4,
+                blurRadius: 1,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -37,11 +37,11 @@ class Button extends StatelessWidget {
               Icon(
                 icon,
                 color: const Color(0xFF015490),
-                size: 50,
+                size: 40,
               ),
               Text(
                 label,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF015490)),
+                style: const TextStyle(fontSize: 14, color: Color(0xFF015490)),
               )
             ],
           ),

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:resilientlink/main.dart';
-import 'package:resilientlink/pages/donations.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   print('Title: ${message.notification?.title}');
@@ -28,11 +26,6 @@ class FirebaseApi {
 
   void handleMessage(RemoteMessage? message) {
     if (message == null) return;
-
-    navigatorKey.currentState?.pushNamed(
-      Donations.route,
-      arguments: message,
-    );
   }
 
   Future<void> initLocalNotifications() async {
@@ -98,16 +91,20 @@ class FirebaseApi {
 
   void listenToAdvisoryCollection() {
     _firestore.collection('advisory').snapshots().listen((snapshot) {
+      print('Snapshot received: ${snapshot.docChanges.length} changes');
       for (var change in snapshot.docChanges) {
+        print('Change type: ${change.type}');
         if (change.type == DocumentChangeType.added) {
           final advisoryData = change.doc.data()!;
           final advisoryId = change.doc.id;
+          print('New advisory added: ID=$advisoryId, Data=$advisoryData');
 
-          // Prevent multiple notifications for the same advisory
+          // Ensure only one notification per advisory ID
           if (_notifiedAdvisories.contains(advisoryId)) continue;
 
+          // Send notification
           _localNotifications.show(
-            advisoryData.hashCode,
+            advisoryId.hashCode,
             'New Advisory Available',
             'Check out the latest advisory!',
             NotificationDetails(
@@ -121,7 +118,7 @@ class FirebaseApi {
             payload: jsonEncode(advisoryData),
           );
 
-          // Add to the set of notified advisories
+          // Track notified advisory
           _notifiedAdvisories.add(advisoryId);
         }
       }

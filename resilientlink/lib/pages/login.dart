@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:resilientlink/Widget/snackbar.dart';
 import 'package:resilientlink/Widget/text_field.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
-import 'package:resilientlink/services/authentication.dart';
 import 'package:resilientlink/services/google_auth.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,28 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
-  }
-
-  void loginUser() async {
-    String res = await AuntServices().loginUser(
-      email: emailController.text,
-      password: passwordController.text,
-    );
-    if (res == "success") {
-      setState(() {
-        isLoading = true;
-      });
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const BottomNavigation(),
-        ),
-      );
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      showSnackbar(context, res);
-    }
   }
 
   @override

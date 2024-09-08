@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:resilientlink/Widget/button.dart';
+import 'package:resilientlink/Widget/dialog_box.dart';
 import 'package:resilientlink/Widget/weather_info.dart';
 import 'package:resilientlink/models/weather_model.dart';
+import 'package:resilientlink/pages/messages.dart';
 import 'package:resilientlink/services/weather_services.dart';
 import 'package:weather/weather.dart';
 
@@ -75,19 +77,76 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F8FF),
+      backgroundColor: const Color(0xFFf1f4f4),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+          },
+          child: Image.asset(
+            'images/logo.png',
+            height: 40,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.mail),
+            color: const Color(0xFF015490),
+            onPressed: () async {
+              try {
+                // Fetch the admin data using a query (assuming there's only one admin)
+                var adminQuery = await FirebaseFirestore.instance
+                    .collection('admin')
+                    .where('isAdmin',
+                        isEqualTo: true) // Fetch the admin dynamically
+                    .limit(1) // Limit to one admin, in case there are more
+                    .get();
+
+                if (adminQuery.docs.isNotEmpty) {
+                  var adminData = adminQuery.docs.first.data();
+
+                  // Assuming adminData contains 'email' and 'uid' fields
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Messages(
+                        recieverEmail: adminData['email'],
+                        recieverID: adminData['uid'],
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                print(e);
+              }
+            },
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _WeatherUpdates(),
-            const SizedBox(
-              height: 25,
-            ),
-            _buttons(),
-            const SizedBox(
-              height: 15,
-            ),
+            Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    _WeatherUpdates(),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    _buttons(),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                  ],
+                )),
             _advisories(),
           ],
         ),
@@ -238,40 +297,26 @@ class _HomePageState extends State<HomePage> {
       alignment: Alignment.centerLeft,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 5),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16, top: 5),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Divider(),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Icon(
+                      Icons.priority_high,
+                      color: Color(0xFF015490),
+                    ),
+                    Text(
                       "Advisories",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        decoration: const BoxDecoration(
-                            color: Color(0xFF015490),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Icon(
-                              Icons.calendar_month,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ))
                   ],
                 ),
-                const Divider(),
+                Divider(),
               ],
             ),
           ),
@@ -280,14 +325,12 @@ class _HomePageState extends State<HomePage> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                // While the data is loading, show a progress indicator
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
 
               if (snapshot.hasError) {
-                // Handle errors
                 return Center(
                   child: Text('Error: ${snapshot.error}'),
                 );
@@ -324,9 +367,20 @@ class _HomePageState extends State<HomePage> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Container(
-                        color: Colors.white,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 1,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(
@@ -360,77 +414,36 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 16.0, right: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    advisory['details'] ?? 'No Description',
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    "Weather System:",
-                                    style: TextStyle(
-                                      color: Colors.black.withOpacity(.5),
-                                    ),
-                                  ),
-                                  Text(
-                                    advisory['weatherSystem'] ?? '',
-                                  ),
-                                  const SizedBox(height: 5),
-                                  advisory['hazards'] != null &&
-                                          advisory['hazards'].isNotEmpty
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Hazards:",
-                                              style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(.5),
-                                              ),
-                                            ),
-                                            Text(
-                                              advisory['hazards'] ?? '',
-                                            ),
-                                            const SizedBox(height: 5),
-                                          ],
-                                        )
-                                      : const SizedBox.shrink(),
-                                  advisory['precautions'] != null &&
-                                          advisory['precautions'].isNotEmpty
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Precautionary Measures:",
-                                              style: TextStyle(
-                                                color: Colors.black
-                                                    .withOpacity(.5),
-                                              ),
-                                            ),
-                                            Text(
-                                              advisory['precautions'] ?? '',
-                                            ),
-                                            const SizedBox(height: 5),
-                                          ],
-                                        )
-                                      : const SizedBox.shrink(),
-                                ],
-                              ),
-                            ),
                             advisory['image'] != null &&
                                     advisory['image'].isNotEmpty
                                 ? Image.network(advisory['image'])
                                 : const SizedBox.shrink(),
-                            Container(
-                              height: 10,
+                            const SizedBox(height: 5),
+                            Material(
                               color: Colors.white,
-                            )
+                              child: InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return DialogBox(
+                                          title: advisory['title'],
+                                          date: formattedDate,
+                                          image: advisory['image'],
+                                          details: advisory['details'],
+                                          weatherSystem:
+                                              advisory['weatherSystem'],
+                                          hazards: advisory['hazards'],
+                                          precautions: advisory['precautions'],
+                                        );
+                                      });
+                                },
+                                child: const Text(
+                                  "View Details",
+                                  style: TextStyle(color: Color(0xFF015490)),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

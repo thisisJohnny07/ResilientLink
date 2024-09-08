@@ -5,9 +5,6 @@ import 'package:resilientlink/api/Firebase_api.dart';
 import 'package:resilientlink/firebase_options.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
 import 'package:resilientlink/pages/login.dart';
-import 'package:resilientlink/pages/messages.dart';
-
-import 'pages/donations.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -37,7 +34,6 @@ class MyApp extends StatelessWidget {
           }
         },
       ),
-      routes: {Donations.route: (context) => const Messages()},
     );
   }
 }
