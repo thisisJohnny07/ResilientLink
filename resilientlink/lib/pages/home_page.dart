@@ -264,20 +264,11 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Button(
             onTab: () {},
             label: "Hotlines",
             icon: Icons.phone,
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Button(
-            onTab: () {},
-            label: "Donate",
-            icon: Icons.volunteer_activism,
           ),
           const SizedBox(
             width: 20,

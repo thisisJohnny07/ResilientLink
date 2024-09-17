@@ -30,8 +30,8 @@ class Profile extends StatelessWidget {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.elliptical(25, 20),
-                      bottomRight: Radius.elliptical(25, 20),
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
                     ),
                   ),
                   child: const SizedBox(

@@ -33,66 +33,54 @@ class DialogBox extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          padding: const EdgeInsets.only(bottom: 5, left: 16.0, right: 16.0),
+          padding:
+              const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.close),
+                    child: const Icon(Icons.close),
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.campaign,
                     color: Color(0xFF015490),
-                    size: 40,
+                    size: 50,
                   ),
-                  const SizedBox(width: 5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, height: 1),
-                      ),
-                      Text(
-                        date,
-                        style: TextStyle(
-                            color: Colors.black.withOpacity(.5), fontSize: 12),
-                      ),
-                    ],
+                  Text(
+                    title,
+                    style:
+                        const TextStyle(fontWeight: FontWeight.bold, height: 1),
+                  ),
+                  Text(
+                    date,
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.5), fontSize: 12),
                   ),
                 ],
               ),
               const SizedBox(height: 5),
-              image.isNotEmpty
-                  ? Image.network(
-                      image,
-                    )
-                  : const SizedBox.shrink(),
-              const SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     details,
+                    textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 5),
-                  Text(
+                  const Text(
                     "Weather System:",
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(.5),
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     weatherSystem,
@@ -102,11 +90,10 @@ class DialogBox extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Hazards:",
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
-                              ),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               hazards,
@@ -119,11 +106,10 @@ class DialogBox extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Precautionary Measures:",
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
-                              ),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               precautions,

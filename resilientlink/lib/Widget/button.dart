@@ -15,35 +15,60 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTab,
-        child: Container(
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 2),
-              ),
-            ],
+      child: ElevatedButton(
+        onPressed: onTab,
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(
-                icon,
-                color: const Color(0xFF015490),
-                size: 40,
-              ),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF015490)),
-              )
-            ],
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.1),
+          backgroundColor: Colors.transparent,
+        ),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF015490),
+                Color(0xFF428CD4),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Container(
+            height: 50,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                const Icon(
+                  Icons.keyboard_double_arrow_right,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
