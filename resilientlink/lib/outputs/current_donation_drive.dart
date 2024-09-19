@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resilientlink/pages/donation_drive_details.dart';
+import 'package:resilientlink/pages/donation_option.dart';
 
 class CurrentDonationDrive extends StatelessWidget {
   const CurrentDonationDrive({super.key});
@@ -275,7 +276,15 @@ class CurrentDonationDrive extends StatelessWidget {
                                                 BorderRadius.circular(5),
                                           ),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                   DonationOption(donationId: documentId,),
+                                            ),
+                                          );
+                                        },
                                         child: const Text("Donate"),
                                       ),
                                     ),

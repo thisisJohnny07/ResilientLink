@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:resilientlink/pages/donation_option.dart';
 import 'package:resilientlink/pages/map.dart';
 
 class DonationDriveDetails extends StatefulWidget {
@@ -256,12 +257,6 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                           )
                         : const SizedBox.shrink(),
                     const SizedBox(height: 15),
-                    const Text(
-                      "PURPOSE",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(donationDrive?['purpose'] ?? 'No purpose provided'),
-                    const SizedBox(height: 15),
                     donationDrive?['isAid']
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +276,9 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                             ],
                           )
                         : const SizedBox.shrink(),
-                    const SizedBox(height: 70)
+                    const SizedBox(height: 15),
+                    Text(donationDrive?['purpose'] ?? 'No purpose provided'),
+                    const SizedBox(height: 70),
                   ],
                 ),
               ),
@@ -289,7 +286,16 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
       floatingActionButton: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DonationOption(
+                  donationId: widget.donationId,
+                ),
+              ),
+            );
+          },
           backgroundColor: const Color(0xFF015490),
           label: const Text(
             "Donate now",

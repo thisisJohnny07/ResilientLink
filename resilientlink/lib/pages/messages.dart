@@ -74,7 +74,10 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: const Color(0xFF015490),
+        foregroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -85,7 +88,7 @@ class _MessagesState extends State<Messages> {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 20),
             Text(
               widget.recieverEmail,
               style: const TextStyle(fontSize: 16),
@@ -132,27 +135,28 @@ class _MessagesState extends State<Messages> {
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
 
     return Container(
-        alignment: alignment,
-        child: Column(
-          crossAxisAlignment:
-              isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: isCurrentUser
-                    ? const Color(0xFF015490)
-                    : Colors.grey.shade500,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-              child: Text(
-                data['message'],
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-              ),
+      alignment: alignment,
+      child: Column(
+        crossAxisAlignment:
+            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: isCurrentUser
+                  ? const Color(0xFF015490)
+                  : Colors.grey.shade500,
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
-        ));
+            padding: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+            child: Text(
+              data['message'],
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildUserInput() {
@@ -164,7 +168,7 @@ class _MessagesState extends State<Messages> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 224, 224, 224),
+                color: const Color.fromARGB(255, 243, 243, 243),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -184,28 +188,25 @@ class _MessagesState extends State<Messages> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 00),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF015490),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          if (_messageController.text.isNotEmpty) {
-                            sendMessage();
-                          }
-                        },
-                        icon: Transform.rotate(
-                          angle: -3.14 / 4,
-                          child: const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF015490),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        if (_messageController.text.isNotEmpty) {
+                          sendMessage();
+                        }
+                      },
+                      icon: Transform.rotate(
+                        angle: -3.14 / 4,
+                        child: const Icon(
+                          Icons.send,
+                          color: Colors.white,
                         ),
-                        iconSize: 18,
                       ),
+                      iconSize: 18,
                     ),
                   ),
                 ],
