@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:resilientlink/pages/generate_qr.dart';
 
 class AidDonationConfirmation extends StatefulWidget {
   final List<Map<String, String>> items;
@@ -21,6 +22,7 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
   // To store the fetched donation data
   Map<String, dynamic>? location;
   bool isLoading = true;
+  late String newDonationId;
 
   @override
   void initState() {
@@ -72,8 +74,11 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
         'donationDriveId': widget.donationDriveId,
         'donorId': user.uid,
         'locationId': widget.locationId,
+        'status': 0,
         'createdAt': FieldValue.serverTimestamp(),
       });
+
+      newDonationId = donationRef.id;
 
       // Add item and quantity to the 'items' subcollection inside the donation document
       for (var item in widget.items) {
@@ -87,14 +92,16 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Donation submitted successfully!")),
+        const SnackBar(
+          content: Text("Donation submitted successfully!"),
+        ),
       );
 
       // Pop to the previous screen or clear the form
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GenerateQr(donationId: newDonationId)));
     } catch (e) {
       // Handle errors
       ScaffoldMessenger.of(context).showSnackBar(
