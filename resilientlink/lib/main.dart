@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:resilientlink/api/Firebase_api.dart';
 import 'package:resilientlink/firebase_options.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
-import 'package:resilientlink/pages/login.dart';
+import 'package:resilientlink/pages/get_started.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return const BottomNavigation();
           } else {
-            return const LoginScreen();
+            return const GetStarted();
           }
         },
       ),

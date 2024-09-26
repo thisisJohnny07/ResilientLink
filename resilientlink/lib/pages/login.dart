@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:resilientlink/Widget/text_field.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
 import 'package:resilientlink/services/google_auth.dart';
 
@@ -11,108 +10,66 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  bool isLoading = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'images/login.jpg'), // Replace with your image path
+                fit: BoxFit.cover, // Cover the entire scaffold
+              ),
+            ),
+          ),
+          // Foreground content
+          Padding(
+            padding: EdgeInsets.only(top: 80),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: FloatingActionButton.extended(
+          onPressed: () async {
+            await FirebaseServices().signInWithGoogle();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavigation(),
+              ),
+            );
+          },
+          backgroundColor: Color.fromARGB(120, 255, 255, 255),
+          label: Row(
+            mainAxisSize: MainAxisSize.min, // Make the Row as small as possible
             children: [
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 100,
-                child: Image.asset("images/logo.png"),
+              Image.network(
+                "https://cdn4.iconfinder.com/data/icons/logos-brands-7/512/google_logo-google_icongoogle-512.png",
+                height: 35,
               ),
-              const SizedBox(height: 30),
-              TextFieldInput(
-                  textEditingController: emailController,
-                  hintText: "Enter your email",
-                  icon: Icons.email),
-              TextFieldInput(
-                  isPass: true,
-                  textEditingController: passwordController,
-                  hintText: "Enter your password",
-                  icon: Icons.lock),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 35),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Forgot password",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(child: Container(height: 1, color: Colors.black)),
-                  const Text(" or "),
-                  Expanded(child: Container(height: 1, color: Colors.black)),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey),
-                  onPressed: () async {
-                    await FirebaseServices().signInWithGoogle();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BottomNavigation(),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Image.network(
-                          "https://cdn4.iconfinder.com/data/icons/logos-brands-7/512/google_logo-google_icongoogle-512.png",
-                          height: 35,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        "Continue with Google",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
+              SizedBox(width: 10),
+              const Text(
+                "Continue with Google",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: Colors.white,
                 ),
               ),
             ],
           ),
+          elevation: 0,
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

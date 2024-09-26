@@ -83,7 +83,7 @@ class _MessagesState extends State<Messages> {
           children: [
             ClipOval(
               child: Image.asset(
-                "images/pdrrmo.jpg",
+                "images/pdrrmo.png",
                 height: 40.0,
                 fit: BoxFit.cover,
               ),

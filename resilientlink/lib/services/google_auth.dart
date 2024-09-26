@@ -15,6 +15,8 @@ class FirebaseServices {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
       if (googleSignInAccount != null) {
+        print("========================================================");
+        print(googleSignInAccount);
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 

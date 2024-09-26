@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:resilientlink/pages/login.dart';
+import 'package:resilientlink/pages/ongoing_donation.dart';
 import 'package:resilientlink/services/google_auth.dart';
 
 class Profile extends StatelessWidget {
@@ -100,6 +101,18 @@ class Profile extends StatelessWidget {
                     onpress: () {},
                   ),
                   ProfileMenu(
+                    title: "Current Donation Drive",
+                    icon: Icons.volunteer_activism,
+                    onpress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OngoingDonation(),
+                        ),
+                      );
+                    },
+                  ),
+                  ProfileMenu(
                     title: "E-Certificates",
                     icon: Icons.verified,
                     onpress: () {},
@@ -107,11 +120,6 @@ class Profile extends StatelessWidget {
                   ProfileMenu(
                     title: "Reviews",
                     icon: Icons.star,
-                    onpress: () {},
-                  ),
-                  ProfileMenu(
-                    title: "Logout",
-                    icon: Icons.logout,
                     onpress: () {},
                   ),
                   const Divider(),

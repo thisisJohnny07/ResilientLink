@@ -80,6 +80,7 @@ class _DonateAidState extends State<DonateAid> {
                 Container(
                   width: double.infinity,
                   margin: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -92,91 +93,90 @@ class _DonateAidState extends State<DonateAid> {
                     ],
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Step 1:",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
+                  child: Column(
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Step 1:",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              "Fill up the Aid/Relief donation information",
-                              style: TextStyle(fontSize: 16),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Item"),
-                            Text("Quantity"),
-                          ],
-                        ),
-                        ...itemControllers.map((controller) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  flex: 3,
-                                  child: TextFormField(
-                                    controller: controller['item'],
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Item cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Flexible(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    controller: controller['quantity'],
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Quantity cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        const SizedBox(height: 20),
-                        ElevatedButton.icon(
-                          onPressed: addItemFields,
-                          icon: const Icon(Icons.add),
-                          label: const Text("Add another item"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF015490),
-                            foregroundColor: Colors.white,
+                            textAlign: TextAlign.center,
                           ),
+                          SizedBox(height: 8),
+                          Text(
+                            "Fill up the Aid/Relief donation information",
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(),
+                      const SizedBox(height: 20),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Item"),
+                          Text("Quantity"),
+                        ],
+                      ),
+                      ...itemControllers.map((controller) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 3,
+                                child: TextFormField(
+                                  controller: controller['item'],
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Item cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Flexible(
+                                flex: 1,
+                                child: TextFormField(
+                                  controller: controller['quantity'],
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Quantity cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: addItemFields,
+                        icon: const Icon(Icons.add),
+                        label: const Text("Add another item"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF015490),
+                          foregroundColor: Colors.white,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],

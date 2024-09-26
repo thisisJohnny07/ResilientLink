@@ -34,7 +34,7 @@ class DialogBox extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           padding:
-              const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+              const EdgeInsets.only(top: 5, bottom: 10, left: 16, right: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

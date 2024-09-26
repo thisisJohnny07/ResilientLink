@@ -90,23 +90,13 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
         }
       }
 
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Donation submitted successfully!"),
-        ),
-      );
-
       // Pop to the previous screen or clear the form
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => GenerateQr(donationId: newDonationId)));
     } catch (e) {
-      // Handle errors
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to submit donation: $e")),
-      );
+      print(e);
     }
   }
 
@@ -120,80 +110,108 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
         title: const Text("Confirm Donation"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Text(
-                    "Step 3:",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: const Offset(0.5, 1),
                   ),
-                  Text(
-                    "Review the items you're donating",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 16),
                 ],
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-            const Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: Color(0xFF015490),
-                ),
-                Text(
-                  "Drop-off Point",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Text(
-              location?['exactAdress'] ?? 'Loading location',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Row(
-              children: [
-                Icon(
-                  Icons.inventory_2,
-                  color: Color(0xFF015490),
-                ),
-                Text(
-                  "Goods List",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 3),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.items.length,
-                itemBuilder: (context, index) {
-                  final item = widget.items[index];
-                  return Card(
-                    color: const Color.fromARGB(255, 219, 235, 248),
-                    child: ListTile(
-                      title: Text(
-                        "Item: ${item['item']}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Step 3:",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      subtitle: Text("Quantity: ${item['quantity']}"),
+                        Text(
+                          "Review the items you're donating",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 10),
+                  Divider(),
+                  const SizedBox(height: 20),
+                  const Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: Color(0xFF015490),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "Drop-off Point",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    location?['exactAdress'] ?? 'Loading location',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Divider(),
+                  const SizedBox(height: 20),
+                  const Row(
+                    children: [
+                      Icon(
+                        Icons.inventory_2,
+                        color: Color(0xFF015490),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "Goods List",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.items.length,
+                      itemBuilder: (context, index) {
+                        final item = widget.items[index];
+                        return Card(
+                          color: const Color.fromARGB(255, 219, 235, 248),
+                          child: ListTile(
+                            title: Text(
+                              "Item: ${item['item']}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text("Quantity: ${item['quantity']}"),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

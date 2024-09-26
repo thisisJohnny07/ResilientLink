@@ -281,7 +281,9 @@ class CurrentDonationDrive extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                   DonationOption(donationId: documentId,),
+                                                  DonationOption(
+                                                donationId: documentId,
+                                              ),
                                             ),
                                           );
                                         },

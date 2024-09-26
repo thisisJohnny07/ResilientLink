@@ -59,4 +59,5 @@ class DefaultFirebaseOptions {
     projectId: 'resilienlink',
     storageBucket: 'resilienlink.appspot.com',
   );
+
 }

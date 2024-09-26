@@ -53,6 +53,8 @@ dependencies:
   permission_handler: ^11.3.1
   qr_flutter: ^4.1.0
   mobile_scanner: ^5.2.3
+  firebase_storage: ^11.6.5
+  path_provider: ^2.1.4
  
 
 dev_dependencies:
@@ -87,13 +89,11 @@ flutter:
   assets:
      - assets/
      - images/logo.png
-     - images/profile.jpg
-     - images/pdrrmo.jpg
-     - images/whitelogo.png
+     - images/pdrrmo.png
      - images/money.png
      - images/aid.png
      - images/P.ResilientLinkLogo.png
-     - images/plogowhite.png
+     - images/login.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
