@@ -72,7 +72,7 @@ class _ItemsState extends State<Items> {
             ),
             SizedBox(width: 5),
             Text(
-              "Items",
+              "Aid/Relief Pack Inventory",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -80,7 +80,26 @@ class _ItemsState extends State<Items> {
             ),
           ],
         ),
-        SizedBox(height: 10), // Add some space before item list
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Item",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "Quantity",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
+        ),
         ...items.map((item) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resilientlink/Widget/progress.dart';
+import 'package:resilientlink/Widget/qr_dialog_box.dart';
 import 'package:resilientlink/outputs/items.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
+import 'package:resilientlink/pages/navigate.dart';
 
 class OngoingDonation extends StatefulWidget {
   const OngoingDonation({super.key});
@@ -219,12 +221,25 @@ class _OngoingDonationState extends State<OngoingDonation> {
                                       children: [
                                         Row(
                                           children: [
-                                            donation['qrCode'] != null
-                                                ? Image.network(
-                                                    donation['qrCode'],
-                                                    height: 50,
-                                                  )
-                                                : SizedBox(),
+                                            if (donation['qrCode'] != null)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          QrDialogBox(
+                                                            image: donation[
+                                                                'qrCode'],
+                                                          ));
+                                                },
+                                                child: Image.network(
+                                                  donation['qrCode'],
+                                                  height: 50,
+                                                ),
+                                              )
+                                            else
+                                              SizedBox(),
                                             SizedBox(width: 10),
                                             Column(
                                               crossAxisAlignment:
@@ -240,7 +255,7 @@ class _OngoingDonationState extends State<OngoingDonation> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  documentId,
+                                                  "# $documentId",
                                                   style: const TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.black54,
@@ -278,7 +293,19 @@ class _OngoingDonationState extends State<OngoingDonation> {
                                             elevation: 2,
                                             shadowColor: Colors.black,
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Navigate(
+                                                  locationId:
+                                                      donation['locationId'],
+                                                  donationDriveId: donation[
+                                                      'donationDriveId'],
+                                                ),
+                                              ),
+                                            );
+                                          },
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,

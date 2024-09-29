@@ -6,6 +6,7 @@ import 'package:resilientlink/Widget/button.dart';
 import 'package:resilientlink/Widget/dialog_box.dart';
 import 'package:resilientlink/Widget/weather_info.dart';
 import 'package:resilientlink/models/weather_model.dart';
+import 'package:resilientlink/pages/bottom_navigation.dart';
 import 'package:resilientlink/pages/messages.dart';
 import 'package:resilientlink/services/weather_services.dart';
 import 'package:weather/weather.dart';
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => const BottomNavigation(),
               ),
             );
           },
