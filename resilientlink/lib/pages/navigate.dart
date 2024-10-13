@@ -213,7 +213,16 @@ class MapSampleState extends State<Navigate> {
                   ),
                   title: const Text(
                     'Navigate',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black54,
+                          offset: Offset(1, 1),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
                   ),
                   centerTitle: true,
                 ),

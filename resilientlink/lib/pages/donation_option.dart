@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resilientlink/pages/donate_aid.dart';
-import 'package:resilientlink/pages/profile.dart';
+import 'package:resilientlink/pages/donate_money.dart';
 
 class DonationOption extends StatefulWidget {
   final String donationId;
@@ -90,7 +90,9 @@ class _DonationOptionState extends State<DonationOption> {
                                   ? DonateAid(
                                       donationId: widget.donationId,
                                     )
-                                  : const Profile(),
+                                  : DonateMoney(
+                                      donationDriveId: widget.donationId,
+                                    ),
                             ),
                           );
                         }

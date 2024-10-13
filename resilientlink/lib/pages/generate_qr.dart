@@ -215,7 +215,9 @@ class _GenerateqrState extends State<GenerateQr> {
             onPressed: () {
               _uploadQrCodeToFirebase();
               final route = MaterialPageRoute(
-                builder: (context) => OngoingDonation(),
+                builder: (context) => OngoingDonation(
+                  initialTabIndex: 0,
+                ),
               );
 
               Navigator.pushAndRemoveUntil(context, route, (route) => false);

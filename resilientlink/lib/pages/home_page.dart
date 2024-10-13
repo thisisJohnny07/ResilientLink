@@ -7,6 +7,8 @@ import 'package:resilientlink/Widget/dialog_box.dart';
 import 'package:resilientlink/Widget/weather_info.dart';
 import 'package:resilientlink/models/weather_model.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
+import 'package:resilientlink/pages/evacuation_map.dart';
+import 'package:resilientlink/pages/hotlines.dart';
 import 'package:resilientlink/pages/messages.dart';
 import 'package:resilientlink/services/weather_services.dart';
 import 'package:weather/weather.dart';
@@ -268,7 +270,14 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         children: [
           Button(
-            onTab: () {},
+            onTab: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Hotlines(),
+                ),
+              );
+            },
             label: "Hotlines",
             icon: Icons.phone,
           ),
@@ -276,7 +285,14 @@ class _HomePageState extends State<HomePage> {
             width: 20,
           ),
           Button(
-            onTab: () {},
+            onTab: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EvacuationMap(),
+                ),
+              );
+            },
             label: "Evacuation",
             icon: Icons.directions_run,
           )
