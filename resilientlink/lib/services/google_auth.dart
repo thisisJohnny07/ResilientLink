@@ -15,8 +15,6 @@ class FirebaseServices {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
       if (googleSignInAccount != null) {
-        print("========================================================");
-        print(googleSignInAccount);
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
@@ -43,12 +41,20 @@ class FirebaseServices {
               'name': user.displayName,
               'email': user.email,
               'uid': user.uid,
+            }).then((value) {
+              print("User added to Firestore");
+            }).catchError((error) {
+              print("Failed to add user to Firestore: $error");
             });
+          } else {
+            print("User already exists in Firestore");
           }
         }
       }
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
+      print("Firebase Auth error: ${e.toString()}");
+    } catch (e) {
+      print("Error: ${e.toString()}");
     }
   }
 

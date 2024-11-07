@@ -4,7 +4,15 @@ import 'package:resilientlink/pages/donate_money.dart';
 
 class DonationOption extends StatefulWidget {
   final String donationId;
-  const DonationOption({super.key, required this.donationId});
+  final bool isAid;
+  final bool isMonetary;
+
+  const DonationOption({
+    super.key,
+    required this.donationId,
+    required this.isAid,
+    required this.isMonetary,
+  });
 
   @override
   State<DonationOption> createState() => _DonationOptionState();
@@ -42,11 +50,13 @@ class _DonationOptionState extends State<DonationOption> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedOption = 1;
-                  });
-                },
+                onTap: widget.isAid
+                    ? () {
+                        setState(() {
+                          selectedOption = 1;
+                        });
+                      }
+                    : null,
                 child: Option(
                   imageAsset: 'images/aid.png',
                   header: "Aid/Relief Donation",
@@ -56,11 +66,13 @@ class _DonationOptionState extends State<DonationOption> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedOption = 2;
-                  });
-                },
+                onTap: widget.isMonetary
+                    ? () {
+                        setState(() {
+                          selectedOption = 2;
+                        });
+                      }
+                    : null,
                 child: Option(
                   imageAsset: 'images/money.png',
                   header: "Monetary Donation",

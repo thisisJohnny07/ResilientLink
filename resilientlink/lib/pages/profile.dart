@@ -4,6 +4,7 @@ import 'package:resilientlink/Widget/list_menu.dart';
 import 'package:resilientlink/pages/e_certificate.dart';
 import 'package:resilientlink/pages/login.dart';
 import 'package:resilientlink/pages/ongoing_donation.dart';
+import 'package:resilientlink/pages/reviews.dart';
 import 'package:resilientlink/services/google_auth.dart';
 
 class Profile extends StatelessWidget {
@@ -127,9 +128,18 @@ class Profile extends StatelessWidget {
                     },
                   ),
                   ListMenu(
-                    title: "Reviews",
+                    title: "Ratings and Reviews",
                     icon: Icons.star,
-                    onpress: () {},
+                    onpress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Reviews(
+                            initialTabIndex: 0,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const Divider(),
                   ListMenu(

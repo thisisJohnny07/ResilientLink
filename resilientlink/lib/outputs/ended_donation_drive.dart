@@ -5,6 +5,31 @@ import 'package:intl/intl.dart';
 class EndedDonationDrive extends StatelessWidget {
   const EndedDonationDrive({super.key});
 
+  Future<Map<String, dynamic>> _getDonationStatistics(
+      String donationDriveId) async {
+    final aidSnapshot = await FirebaseFirestore.instance
+        .collection('aid_donation')
+        .where('donationDriveId', isEqualTo: donationDriveId)
+        .where('status', whereIn: [1, 2]).get();
+
+    final moneySnapshot = await FirebaseFirestore.instance
+        .collection('money_donation')
+        .where('donationDriveId', isEqualTo: donationDriveId)
+        .get();
+
+    int aidDonationCount = aidSnapshot.docs.length;
+
+    double totalAmount = 0.0;
+    for (var doc in moneySnapshot.docs) {
+      totalAmount += (doc.data()['amount'] as num).toDouble();
+    }
+
+    return {
+      'aidDonationCount': aidDonationCount,
+      'totalAmount': totalAmount,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final CollectionReference donationDrive =
@@ -29,7 +54,7 @@ class EndedDonationDrive extends StatelessWidget {
           QuerySnapshot querySnapshot = snapshot.data!;
           List<QueryDocumentSnapshot> documents = querySnapshot.docs;
 
-          // Filter only active donation drives where isStart == 1
+          // Filter only completed donation drives where isStart == 3
           List<Map<String, dynamic>> completedDrives = documents
               .map((e) => e.data() as Map<String, dynamic>)
               .where((drive) => drive['isStart'] == 3)
@@ -104,158 +129,184 @@ class EndedDonationDrive extends StatelessWidget {
                         ? DateFormat('MMMM dd, yyyy – hh:mm a').format(dateTime)
                         : 'Unknown date';
 
-                    // Check if this is the last item
                     bool isLastItem = index == completedDrives.length - 1;
 
-                    return Container(
-                      width: totalDonationDrive == 1 ? 300 : 260,
-                      margin: EdgeInsets.only(
-                        left: 16.0,
-                        bottom: 30,
-                        right: isLastItem ? 16.0 : 0,
-                      ),
-                      padding: const EdgeInsets.only(bottom: 30),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 4),
+                    // Getting the donation statistics using the document ID
+                    return FutureBuilder<Map<String, dynamic>>(
+                      future:
+                          _getDonationStatistics(snapshot.data!.docs[index].id),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        }
+
+                        int aidDonationCount =
+                            snapshot.data?['aidDonationCount'] ?? 0;
+                        double totalAmount =
+                            snapshot.data?['totalAmount'] ?? 0.0;
+
+                        return Container(
+                          width: totalDonationDrive == 1 ? 300 : 260,
+                          margin: EdgeInsets.only(
+                            left: 16.0,
+                            bottom: 30,
+                            right: isLastItem ? 16.0 : 0,
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                            ),
-                            child: Stack(
-                              children: [
-                                SizedBox(
-                                  height: 200,
-                                  width: double.infinity,
-                                  child: Image.network(
-                                    donationDrive['image'] as String,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 8,
-                                  left: 8,
-                                  right: 8,
-                                  child: Text(
-                                    donationDrive['title'] ?? 'No Title',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black54,
-                                          offset: Offset(1, 1),
-                                          blurRadius: 4,
-                                        ),
-                                      ],
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                const Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: Icon(
-                                    Icons.share,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          padding: const EdgeInsets.only(bottom: 30),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 2,
+                                blurRadius: 6,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(formattedDate),
-                                const SizedBox(height: 10),
-                                const Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                ),
+                                child: Stack(
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Packs Collected",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black45,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          "100,00",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        )
-                                      ],
+                                    SizedBox(
+                                      height: 200,
+                                      width: double.infinity,
+                                      child: Image.network(
+                                        donationDrive['image'] as String,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          "Money Collected",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black45,
-                                          ),
+                                    Positioned(
+                                      bottom: 8,
+                                      left: 8,
+                                      right: 8,
+                                      child: Text(
+                                        donationDrive['title'] ?? 'No Title',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.black54,
+                                              offset: Offset(1, 1),
+                                              blurRadius: 4,
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          "₱100,00",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: Icon(
+                                        Icons.share,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                const SizedBox(height: 10),
-                                Center(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF015490),
-                                      foregroundColor: Colors.white,
-                                      minimumSize:
-                                          const Size(double.infinity, 50),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      elevation: 2,
-                                      shadowColor: Colors.black,
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(formattedDate),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Packs Collected",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black45,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              aidDonationCount.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            const Text(
+                                              "Money Collected",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black45,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              "₱${totalAmount.toStringAsFixed(2)}",
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    onPressed: () {},
-                                    child: const Text("Details"),
-                                  ),
+                                    const SizedBox(height: 10),
+                                    Center(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF015490),
+                                          foregroundColor: Colors.white,
+                                          minimumSize:
+                                              const Size(double.infinity, 50),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          elevation: 2,
+                                          shadowColor: Colors.black,
+                                        ),
+                                        onPressed: () {
+                                          // View details here
+                                        },
+                                        child: const Text("Details"),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     );
                   }).toList(),
                 ),
@@ -263,6 +314,7 @@ class EndedDonationDrive extends StatelessWidget {
             ],
           );
         }
+
         return const Center(
           child: Text('No Donation Drive posted'),
         );

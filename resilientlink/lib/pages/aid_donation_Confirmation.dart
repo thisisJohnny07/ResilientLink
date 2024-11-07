@@ -21,7 +21,7 @@ class AidDonationConfirmation extends StatefulWidget {
 class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
   // To store the fetched donation data
   Map<String, dynamic>? location;
-  bool isLoading = true;
+  bool _isLoading = false;
   late String newDonationId;
 
   @override
@@ -42,23 +42,26 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
       if (doc.exists) {
         setState(() {
           location = doc.data() as Map<String, dynamic>? ?? {};
-          isLoading = false;
+          _isLoading = false;
         });
       } else {
         setState(() {
           location = {};
-          isLoading = false;
+          _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
         location = {};
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
 
   Future<void> submitDonation(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
@@ -75,6 +78,7 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
         'donorId': user.uid,
         'locationId': widget.locationId,
         'status': 0,
+        'isRated': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -92,10 +96,18 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
 
       // Pop to the previous screen or clear the form
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GenerateQr(donationId: newDonationId)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => GenerateQr(donationId: newDonationId)))
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       print(e);
     }
   }
@@ -110,128 +122,147 @@ class _AidDonationConfirmationState extends State<AidDonationConfirmation> {
         title: const Text("Confirm Donation"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
-              padding: EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    spreadRadius: 1,
-                    blurRadius: 1,
-                    offset: const Offset(0.5, 1),
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Step 3:",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          "Review the items you're donating",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Divider(),
-                  const SizedBox(height: 20),
-                  const Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Color(0xFF015490),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        "Drop-off Point",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(24.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(0.5, 1),
                       ),
                     ],
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  Text(
-                    location?['exactAdress'] ?? 'Loading location',
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Divider(),
-                  const SizedBox(height: 20),
-                  const Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.inventory_2,
-                        color: Color(0xFF015490),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        "Goods List",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.items.length,
-                      itemBuilder: (context, index) {
-                        final item = widget.items[index];
-                        return Card(
-                          color: const Color.fromARGB(255, 219, 235, 248),
-                          child: ListTile(
-                            title: Text(
-                              "Item: ${item['item']}",
-                              style: const TextStyle(
+                      const Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "Step 3:",
+                              style: TextStyle(
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text("Quantity: ${item['quantity']}"),
+                            Text(
+                              "Review the items you're donating",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(),
+                      const SizedBox(height: 20),
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Color(0xFF015490),
                           ),
-                        );
-                      },
-                    ),
+                          SizedBox(width: 5),
+                          Text(
+                            "Drop-off Point",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        location?['exactAdress'] ?? 'Loading location',
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(),
+                      const SizedBox(height: 20),
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.inventory_2,
+                            color: Color(0xFF015490),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            "Goods List",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Flexible(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: widget.items.length,
+                          itemBuilder: (context, index) {
+                            final item = widget.items[index];
+                            return Card(
+                              color: const Color.fromARGB(255, 219, 235, 248),
+                              child: ListTile(
+                                title: Text(
+                                  "Item: ${item['item']}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text("Quantity: ${item['quantity']}"),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+        ],
       ),
-      floatingActionButton: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: FloatingActionButton.extended(
-          onPressed: () => submitDonation(context),
-          backgroundColor: const Color(0xFF015490),
-          label: const Text(
-            "Confirm Donation",
-            style: TextStyle(color: Colors.white),
+      floatingActionButton: Stack(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: FloatingActionButton.extended(
+              onPressed: () => submitDonation(context),
+              backgroundColor: const Color(0xFF015490),
+              label: const Text(
+                "Confirm Donation",
+                style: TextStyle(color: Colors.white),
+              ),
+              icon: const Icon(
+                Icons.check,
+                color: Colors.white,
+              ),
+              elevation: 0,
+            ),
           ),
-          icon: const Icon(
-            Icons.check,
-            color: Colors.white,
-          ),
-          elevation: 0,
-        ),
+          if (_isLoading)
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 56,
+              color: Colors.black.withOpacity(0.5),
+            ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

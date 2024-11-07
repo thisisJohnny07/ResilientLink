@@ -103,6 +103,9 @@ class _MapsState extends State<SelectDropOff> {
   }
 
   void _onSelectButtonPressed() {
+    setState(() {
+      _isLoading = true;
+    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -112,13 +115,11 @@ class _MapsState extends State<SelectDropOff> {
           locationId: _selectedMarkerId.toString(),
         ),
       ),
-    );
-    if (_selectedMarkerId != null) {
-      // Print the ID of the selected marker
-      print('Selected marker ID: $_selectedMarkerId');
-    } else {
-      print('No marker selected');
-    }
+    ).then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
@@ -182,42 +183,58 @@ class _MapsState extends State<SelectDropOff> {
               ],
             ),
           ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed:
-                      _selectedMarkerId == null ? null : _onSelectButtonPressed,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF015490),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Select",
-                        style: TextStyle(color: Colors.white),
+      bottomNavigationBar: Stack(
+        children: [
+          BottomAppBar(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _selectedMarkerId == null
+                          ? null
+                          : _onSelectButtonPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF015490),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      SizedBox(width: 20),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Select",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(width: 20),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 56,
+              color: Colors.black.withOpacity(0.5),
+            ),
+        ],
       ),
     );
   }

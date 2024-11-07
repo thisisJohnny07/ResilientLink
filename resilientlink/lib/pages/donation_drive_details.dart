@@ -17,6 +17,8 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
   // To store the fetched donation data
   Map<String, dynamic>? donationDrive;
   bool isLoading = true;
+  int aidDonationCount = 0;
+  double totalAmount = 0.0;
 
   @override
   void initState() {
@@ -37,6 +39,12 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
           donationDrive = doc.data() as Map<String, dynamic>? ?? {};
           isLoading = false;
         });
+
+        final stats = await _getDonationStatistics(widget.donationId);
+        setState(() {
+          aidDonationCount = stats['aidDonationCount'] ?? 0;
+          totalAmount = stats['totalAmount'] ?? 0.0;
+        });
       } else {
         setState(() {
           donationDrive = {};
@@ -56,6 +64,31 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
     if (!status.isGranted) {
       // Handle permission denial
     }
+  }
+
+  Future<Map<String, dynamic>> _getDonationStatistics(
+      String donationDriveId) async {
+    final aidSnapshot = await FirebaseFirestore.instance
+        .collection('aid_donation')
+        .where('donationDriveId', isEqualTo: donationDriveId)
+        .where('status', whereIn: [1, 2]).get();
+
+    final moneySnapshot = await FirebaseFirestore.instance
+        .collection('money_donation')
+        .where('donationDriveId', isEqualTo: donationDriveId)
+        .get();
+
+    int aidDonationCount = aidSnapshot.docs.length;
+
+    double totalAmount = 0.0;
+    for (var doc in moneySnapshot.docs) {
+      totalAmount += (doc.data()['amount'] as num).toDouble();
+    }
+
+    return {
+      'aidDonationCount': aidDonationCount,
+      'totalAmount': totalAmount,
+    };
   }
 
   @override
@@ -181,7 +214,7 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         donationDrive?['isAid']
-                            ? const Column(
+                            ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -193,8 +226,8 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                                   ),
                                   SizedBox(height: 14),
                                   Text(
-                                    "100,00",
-                                    style: TextStyle(
+                                    "$aidDonationCount", // Display exact aid donation count
+                                    style: const TextStyle(
                                       fontSize: 14,
                                     ),
                                   )
@@ -202,7 +235,7 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                               )
                             : const SizedBox.shrink(),
                         donationDrive?['isMonetary']
-                            ? const Column(
+                            ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
@@ -214,8 +247,8 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                                   ),
                                   SizedBox(height: 14),
                                   Text(
-                                    "₱100,00",
-                                    style: TextStyle(
+                                    "₱${totalAmount.toStringAsFixed(2)}",
+                                    style: const TextStyle(
                                       fontSize: 14,
                                     ),
                                   )
@@ -292,6 +325,8 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
               MaterialPageRoute(
                 builder: (context) => DonationOption(
                   donationId: widget.donationId,
+                  isAid: donationDrive?['isAid'],
+                  isMonetary: donationDrive?['isMonetary'],
                 ),
               ),
             );

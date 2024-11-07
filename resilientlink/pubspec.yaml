@@ -60,6 +60,8 @@ dependencies:
   url_launcher: ^6.3.0
   webview_flutter: ^4.9.0
   webview_flutter_android: ^3.16.9
+  pdf: ^3.11.1
+  flutter_spinkit: ^5.2.1
  
 
 dev_dependencies:
@@ -99,6 +101,10 @@ flutter:
      - images/aid.png
      - images/P.ResilientLinkLogo.png
      - images/login.jpg
+     - images/southcotabato.png
+     - images/signature.png
+     - images/certificate.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

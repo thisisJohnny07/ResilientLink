@@ -81,6 +81,8 @@ class _CustomerPaymongoScreenState extends State<CustomerPaymongoScreen> {
                 'donorId': widget.donorId,
                 'amount': widget.amount,
                 'modeOfPayment': widget.modeOfPayment,
+                'isRated': false,
+                'isDelivered': false,
                 'createdAt': FieldValue.serverTimestamp(),
               });
               Navigator.pushReplacement(

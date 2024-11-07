@@ -23,6 +23,7 @@ class _GenerateqrState extends State<GenerateQr> {
   final GlobalKey _qrkey = GlobalKey();
   bool dirExists = false;
   dynamic externalDir = '/storage/emulated/0/Download/Qr_code';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -141,103 +142,135 @@ class _GenerateqrState extends State<GenerateQr> {
       },
       child: Scaffold(
         backgroundColor: Color(0xFF015490),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        body: Stack(
           children: [
-            donationIdController.text.isEmpty
-                ? Container()
-                : Center(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Thank you for helping us build resilience!",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          ShaderMask(
-                            shaderCallback: (bounds) => const LinearGradient(
-                              colors: [
-                                Color(0xFF428CD4),
-                                Color(0xFF015490),
-                                Color(0xFF428CD4),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ).createShader(bounds),
-                            child: RepaintBoundary(
-                              key: _qrkey,
-                              child: QrImageView(
-                                data: donationIdController.text,
-                                version: QrVersions.auto,
-                                size: 200,
-                                dataModuleStyle: const QrDataModuleStyle(
-                                  dataModuleShape: QrDataModuleShape.square,
-                                  color: Colors.white,
-                                ),
-                                eyeStyle: const QrEyeStyle(
-                                  eyeShape: QrEyeShape.square,
-                                  color: Colors.white,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                donationIdController.text.isEmpty
+                    ? Container()
+                    : Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Step 4:",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
+                              Text(
+                                "Attach this QR code to your package for scanning and verification.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(height: 10),
+                              ShaderMask(
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
+                                  colors: [
+                                    Color(0xFF428CD4),
+                                    Color(0xFF015490),
+                                    Color(0xFF428CD4),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ).createShader(bounds),
+                                child: RepaintBoundary(
+                                  key: _qrkey,
+                                  child: QrImageView(
+                                    data: donationIdController.text,
+                                    version: QrVersions.auto,
+                                    size: 200,
+                                    dataModuleStyle: const QrDataModuleStyle(
+                                      dataModuleShape: QrDataModuleShape.square,
+                                      color: Colors.white,
+                                    ),
+                                    eyeStyle: const QrEyeStyle(
+                                      eyeShape: QrEyeShape.square,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 219, 235, 248),
+                                ),
+                                onPressed: _captureAndSavePng,
+                                child: Text("Dowload QR Code"),
+                              )
+                            ],
                           ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor:
-                                  Color.fromARGB(255, 219, 235, 248),
-                            ),
-                            onPressed: _captureAndSavePng,
-                            child: Text("Dowload QR Code"),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-          ],
-        ),
-        floatingActionButton: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              _uploadQrCodeToFirebase();
-              final route = MaterialPageRoute(
-                builder: (context) => OngoingDonation(
-                  initialTabIndex: 0,
-                ),
-              );
-
-              Navigator.pushAndRemoveUntil(context, route, (route) => false);
-            },
-            backgroundColor: Colors.white,
-            label: Row(
-              children: [
-                const Text(
-                  "Finish",
-                  style: TextStyle(color: Color(0xFF015490)),
-                ),
-                SizedBox(width: 10),
-                Icon(
-                  Icons.task_alt,
-                  color: Color(0xFF015490),
-                ),
               ],
             ),
-            elevation: 0,
-          ),
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+          ],
+        ),
+        floatingActionButton: Stack(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  _uploadQrCodeToFirebase();
+                  final route = MaterialPageRoute(
+                    builder: (context) => OngoingDonation(
+                      initialTabIndex: 0,
+                    ),
+                  );
+
+                  Navigator.pushAndRemoveUntil(
+                      context, route, (route) => false);
+                  setState(() {
+                    _isLoading = false;
+                  });
+                },
+                backgroundColor: Colors.white,
+                label: Row(
+                  children: [
+                    const Text(
+                      "Finish",
+                      style: TextStyle(color: Color(0xFF015490)),
+                    ),
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.task_alt,
+                      color: Color(0xFF015490),
+                    ),
+                  ],
+                ),
+                elevation: 0,
+              ),
+            ),
+            if (_isLoading)
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 56,
+                color: Colors.black.withOpacity(0.5),
+              ),
+          ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

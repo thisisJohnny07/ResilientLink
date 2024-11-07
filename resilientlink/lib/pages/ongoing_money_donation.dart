@@ -37,7 +37,8 @@ class _OngoingDonationState extends State<OngoingMoneyDonation>
     return Scaffold(
       backgroundColor: const Color(0xFFf1f4f4),
       body: StreamBuilder<QuerySnapshot>(
-        stream: moneyDonation.snapshots(),
+        stream:
+            moneyDonation.where('isDelivered', isEqualTo: false).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
