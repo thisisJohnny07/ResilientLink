@@ -55,13 +55,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 "https://cdn4.iconfinder.com/data/icons/logos-brands-7/512/google_logo-google_icongoogle-512.png",
                 height: 35,
               ),
-              SizedBox(width: 10),
-              const Text(
+              SizedBox(width: 15),
+              Text(
                 "Continue with Google",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
                   color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(2, .5),
+                      blurRadius: 4,
+                    )
+                  ],
                 ),
               ),
             ],

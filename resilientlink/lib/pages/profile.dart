@@ -90,11 +90,24 @@ class Profile extends StatelessWidget {
                   child: SizedBox(
                     height: 120,
                     width: 120,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(60),
-                      child: Image.network(
-                        "${FirebaseAuth.instance.currentUser!.photoURL}",
-                        fit: BoxFit.cover,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: .5,
+                            blurRadius: 3,
+                            offset: Offset(0, .2),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: Image.network(
+                          "${FirebaseAuth.instance.currentUser!.photoURL}",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

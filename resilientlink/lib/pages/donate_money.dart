@@ -155,6 +155,7 @@ class _DonateMoneyState extends State<DonateMoney> {
                       controller: amount,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
+                        prefixText: '₱ ',
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) =>

@@ -71,7 +71,7 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
     final aidSnapshot = await FirebaseFirestore.instance
         .collection('aid_donation')
         .where('donationDriveId', isEqualTo: donationDriveId)
-        .where('status', whereIn: [1, 2]).get();
+        .get();
 
     final moneySnapshot = await FirebaseFirestore.instance
         .collection('money_donation')
@@ -218,7 +218,7 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Packs Shared",
+                                    "Packs Pledged",
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.black45,

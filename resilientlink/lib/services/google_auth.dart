@@ -14,45 +14,49 @@ class FirebaseServices {
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
-      if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
 
-        final AuthCredential authCredential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
-        );
+      if (googleSignInAccount == null) {
+        print("Sign-in process was aborted.");
+        return; // User cancelled the sign-in
+      }
 
-        // Sign in the user with the obtained credentials
-        UserCredential userCredential =
-            await _auth.signInWithCredential(authCredential);
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-        // Get user information from the credential
-        User? user = userCredential.user;
+      if (googleSignInAuthentication.accessToken == null ||
+          googleSignInAuthentication.idToken == null) {
+        print("Error: Missing Google Auth Token");
+        return;
+      }
 
-        if (user != null) {
-          // Check if the user already exists in Firestore
-          DocumentSnapshot userDoc =
-              await _firestore.collection('users').doc(user.uid).get();
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
 
-          if (!userDoc.exists) {
-            // If the user doesn't exist in Firestore, add them
-            await _firestore.collection('users').doc(user.uid).set({
-              'name': user.displayName,
-              'email': user.email,
-              'uid': user.uid,
-            }).then((value) {
-              print("User added to Firestore");
-            }).catchError((error) {
-              print("Failed to add user to Firestore: $error");
-            });
-          } else {
-            print("User already exists in Firestore");
-          }
+      UserCredential userCredential =
+          await _auth.signInWithCredential(authCredential);
+
+      User? user = userCredential.user;
+      if (user != null) {
+        DocumentReference userRef =
+            _firestore.collection('users').doc(user.uid);
+        DocumentSnapshot userSnapshot = await userRef.get();
+
+        if (!userSnapshot.exists) {
+          await userRef.set({
+            'name': user.displayName,
+            'email': user.email,
+            'uid': user.uid,
+          });
+
+          print("User data saved to Firestore");
+        } else {
+          print("User already exists in Firestore");
         }
       }
     } on FirebaseAuthException catch (e) {
-      print("Firebase Auth error: ${e.toString()}");
+      print("Firebase Auth error: ${e.message}");
     } catch (e) {
       print("Error: ${e.toString()}");
     }

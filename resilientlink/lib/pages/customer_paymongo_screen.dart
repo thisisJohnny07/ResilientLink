@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:resilientlink/pages/ongoing_donation.dart';
+import 'package:resilientlink/pages/thank_you_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 // #docregion platform_imports
 // Import for Android features.
@@ -88,9 +88,7 @@ class _CustomerPaymongoScreenState extends State<CustomerPaymongoScreen> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => OngoingDonation(
-                            initialTabIndex: 1,
-                          )));
+                      builder: (context) => ThankYouPage(index: 1)));
             } else if (change.url!.contains('/payments/cancelled')) {
               debugPrint('PAYMENT CANCELLED');
             }

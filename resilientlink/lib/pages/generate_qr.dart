@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:resilientlink/pages/ongoing_donation.dart';
+import 'package:resilientlink/pages/thank_you_page.dart';
 
 class GenerateQr extends StatefulWidget {
   final String donationId;
@@ -236,10 +236,7 @@ class _GenerateqrState extends State<GenerateQr> {
                   });
                   _uploadQrCodeToFirebase();
                   final route = MaterialPageRoute(
-                    builder: (context) => OngoingDonation(
-                      initialTabIndex: 0,
-                    ),
-                  );
+                      builder: (context) => ThankYouPage(index: 0));
 
                   Navigator.pushAndRemoveUntil(
                       context, route, (route) => false);
