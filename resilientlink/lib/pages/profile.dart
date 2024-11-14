@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:resilientlink/Widget/certificates.dart';
 import 'package:resilientlink/Widget/list_menu.dart';
 import 'package:resilientlink/pages/e_certificate.dart';
 import 'package:resilientlink/pages/login.dart';
+import 'package:resilientlink/pages/messages.dart';
 import 'package:resilientlink/pages/ongoing_donation.dart';
-import 'package:resilientlink/pages/reviews.dart';
+import 'package:resilientlink/pages/ratings.dart';
+import 'package:resilientlink/pages/to_rate.dart';
 import 'package:resilientlink/services/google_auth.dart';
 
 class Profile extends StatelessWidget {
@@ -34,8 +38,8 @@ class Profile extends StatelessWidget {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
                   ),
                   child: const SizedBox(
@@ -43,6 +47,43 @@ class Profile extends StatelessWidget {
                     width: 130,
                   ),
                 ),
+                Positioned(
+                    top: 20,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.mail),
+                      color: Colors.white,
+                      onPressed: () async {
+                        try {
+                          // Fetch the admin data using a query (assuming there's only one admin)
+                          var adminQuery = await FirebaseFirestore.instance
+                              .collection('admin')
+                              .where('isAdmin',
+                                  isEqualTo:
+                                      true) // Fetch the admin dynamically
+                              .limit(
+                                  1) // Limit to one admin, in case there are more
+                              .get();
+
+                          if (adminQuery.docs.isNotEmpty) {
+                            var adminData = adminQuery.docs.first.data();
+
+                            // Assuming adminData contains 'email' and 'uid' fields
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Messages(
+                                  recieverEmail: adminData['email'],
+                                  recieverID: adminData['uid'],
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                    )),
                 Positioned(
                   bottom: -50,
                   left: (MediaQuery.of(context).size.width - 120) / 2,
@@ -80,28 +121,18 @@ class Profile extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: 200,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF015490),
-                      ),
-                      child: const Text(
-                        "Edit Profile",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                  const SizedBox(height: 10),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "My Donations",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(),
-                  const SizedBox(height: 10),
-                  ListMenu(
-                    title: "Personal Information",
-                    icon: Icons.person,
-                    onpress: () {},
                   ),
                   ListMenu(
                     title: "Current Donation Drive",
@@ -118,13 +149,11 @@ class Profile extends StatelessWidget {
                     },
                   ),
                   ListMenu(
-                    title: "E-Certificates",
+                    title: "To Rate",
                     icon: Icons.verified,
                     onpress: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ECertificate()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ToRate()));
                     },
                   ),
                   ListMenu(
@@ -133,14 +162,43 @@ class Profile extends StatelessWidget {
                     onpress: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => Reviews(
-                            initialTabIndex: 0,
-                          ),
-                        ),
+                        MaterialPageRoute(builder: (context) => Ratings()),
                       );
                     },
                   ),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "E-Certificates",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ECertificate(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "See All",
+                            style: TextStyle(
+                              color: Color(0xFF015490),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Certificates(),
+                  SizedBox(height: 10),
                   const Divider(),
                   ListMenu(
                     title: "Logout",

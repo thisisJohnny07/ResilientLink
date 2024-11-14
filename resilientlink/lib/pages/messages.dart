@@ -98,6 +98,7 @@ class _MessagesState extends State<Messages> {
       ),
       body: Column(
         children: [
+          SizedBox(height: 10),
           Expanded(
             child: _buildMessageList(),
           ),

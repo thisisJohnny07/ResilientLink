@@ -6,6 +6,7 @@ import 'package:resilientlink/Widget/button.dart';
 import 'package:resilientlink/Widget/dialog_box.dart';
 import 'package:resilientlink/Widget/weather_info.dart';
 import 'package:resilientlink/models/weather_model.dart';
+import 'package:resilientlink/pages/advisories.dart';
 import 'package:resilientlink/pages/bottom_navigation.dart';
 import 'package:resilientlink/pages/evacuation_map.dart';
 import 'package:resilientlink/pages/hotlines.dart';
@@ -306,26 +307,32 @@ class _HomePageState extends State<HomePage> {
       alignment: Alignment.centerLeft,
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 16, top: 5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Divider(),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.priority_high,
+                const Text(
+                  "Advisories",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Advisories(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "See More",
+                    style: TextStyle(
                       color: Color(0xFF015490),
                     ),
-                    Text(
-                      "Advisories",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                Divider(),
+                  ),
+                )
               ],
             ),
           ),

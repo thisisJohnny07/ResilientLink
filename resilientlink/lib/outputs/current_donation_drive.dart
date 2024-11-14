@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:resilientlink/pages/all_current_donation_drive.dart';
 import 'package:resilientlink/pages/donation_drive_details.dart';
 import 'package:resilientlink/pages/donation_option.dart';
 
@@ -105,7 +106,11 @@ class CurrentDonationDrive extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // view all here
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AllCurrentDonationDrive()));
                       },
                       child: const Text(
                         "See all",

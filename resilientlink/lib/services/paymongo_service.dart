@@ -13,7 +13,7 @@ class PaymongoService {
     required String currency,
     required String paymentMethod, // card, gcash, paymaya
   }) async {
-    final url = Uri.parse("https://api.medlexer.com/v1/payments");
+    final url = Uri.parse("https://payments.medlexer.com/v1/pay");
 
     final Map<String, dynamic> reqBody = {
       'description': description,

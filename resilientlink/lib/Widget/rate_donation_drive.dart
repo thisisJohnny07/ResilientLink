@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
-import 'package:resilientlink/pages/reviews.dart';
+import 'package:resilientlink/pages/ratings.dart';
 
 class RateDonationDrive extends StatefulWidget {
   final String donationDriveId;
@@ -112,8 +112,8 @@ class _RateDonationDriveState extends State<RateDonationDrive> {
       await createCertificate(user?.displayName ?? 'Donor');
 
       // Close the dialog after certificate generation
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => Reviews(initialTabIndex: 0)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Ratings()));
       setState(() {
         _isLoading = false;
       });

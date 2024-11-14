@@ -84,6 +84,12 @@ class _ToRateState extends State<ToRate> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFf1f4f4),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF015490),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: const Text("To Rate"),
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : donationDriveDocs.isEmpty

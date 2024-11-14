@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:resilientlink/pages/all_ended_donation_drive.dart';
+import 'package:resilientlink/pages/completed_donation_drive_details.dart';
 
 class EndedDonationDrive extends StatelessWidget {
   const EndedDonationDrive({super.key});
@@ -56,8 +58,11 @@ class EndedDonationDrive extends StatelessWidget {
 
           // Filter only completed donation drives where isStart == 3
           List<Map<String, dynamic>> completedDrives = documents
-              .map((e) => e.data() as Map<String, dynamic>)
               .where((drive) => drive['isStart'] == 3)
+              .map((e) => {
+                    'id': e.id,
+                    ...e.data() as Map<String, dynamic>,
+                  })
               .toList();
 
           int totalDonationDrive = completedDrives.length;
@@ -99,19 +104,22 @@ class EndedDonationDrive extends StatelessWidget {
                             totalDonationDrive.toString(),
                             style: const TextStyle(fontSize: 12),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-                        // view all here
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AllEndedDonationDrive()));
                       },
                       child: const Text(
                         "See all",
                         style:
                             TextStyle(fontSize: 14, color: Color(0xFF015490)),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -131,10 +139,9 @@ class EndedDonationDrive extends StatelessWidget {
 
                     bool isLastItem = index == completedDrives.length - 1;
 
-                    // Getting the donation statistics using the document ID
+                    // Getting the donation statistics using the correct document ID
                     return FutureBuilder<Map<String, dynamic>>(
-                      future:
-                          _getDonationStatistics(snapshot.data!.docs[index].id),
+                      future: _getDonationStatistics(donationDrive['id']),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -295,7 +302,15 @@ class EndedDonationDrive extends StatelessWidget {
                                           shadowColor: Colors.black,
                                         ),
                                         onPressed: () {
-                                          // View details here
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CompletedDonationDriveDetails(
+                                                donationId: donationDrive['id'],
+                                              ),
+                                            ),
+                                          );
                                         },
                                         child: const Text("Details"),
                                       ),
@@ -310,13 +325,13 @@ class EndedDonationDrive extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-              )
+              ),
             ],
           );
         }
 
         return const Center(
-          child: Text('No Donation Drive posted'),
+          child: Text("No data found."),
         );
       },
     );

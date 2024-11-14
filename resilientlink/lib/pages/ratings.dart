@@ -26,6 +26,12 @@ class Ratings extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFf1f4f4),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF015490),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: const Text("Ratings"),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: ratingsCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -197,7 +203,7 @@ class Ratings extends StatelessWidget {
                                 Text(
                                   rating['feedback'] ?? 'No Feedback Provided',
                                   style: const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 15,
                                   ),
                                 ),
                                 SizedBox(height: 10),

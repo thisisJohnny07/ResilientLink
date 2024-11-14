@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:resilientlink/pages/customer_paymongo_screen.dart';
 import 'package:resilientlink/services/paymongo_service.dart';
 
@@ -16,6 +17,7 @@ class _DonateMoneyState extends State<DonateMoney> {
   TextEditingController amount = TextEditingController();
   PaymongoService _paymongoService = PaymongoService();
   int? selectedOption;
+  bool _isLoading = false;
 
   // Function to check if both text fields are filled and an option is selected
   bool get _isFormValid {
@@ -25,6 +27,9 @@ class _DonateMoneyState extends State<DonateMoney> {
   }
 
   void createPayment() async {
+    setState(() {
+      _isLoading = true;
+    });
     String modeOfPayment = '';
     if (selectedOption == 1) {
       modeOfPayment = "card";
@@ -55,6 +60,9 @@ class _DonateMoneyState extends State<DonateMoney> {
         );
       }));
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -67,134 +75,169 @@ class _DonateMoneyState extends State<DonateMoney> {
         title: const Text("Money Donation"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-          width: double.infinity,
-          margin: const EdgeInsets.all(16),
-          padding: EdgeInsets.all(24.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0.5, 1),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(24.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: const Offset(0.5, 1),
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Please complete all required fields.",
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 20),
-                Text("Phone number"),
-                SizedBox(height: 5),
-                TextFormField(
-                  controller: phone,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) =>
-                      setState(() {}), // Trigger re-build when text changes
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Phone number cannot be empty';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                Text("Amount"),
-                SizedBox(height: 5),
-                TextFormField(
-                  controller: amount,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) =>
-                      setState(() {}), // Trigger re-build when text changes
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Amount cannot be empty';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                Text("Fund Transfer Method"),
-                SizedBox(height: 5),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedOption = 1;
-                    });
-                  },
-                  child: Option(
-                    imageAsset:
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHg6L0yf2DhQrkSIGWp0BnADyYi5OkOI2MPA&s',
-                    header: "Card",
-                    isSelected: selectedOption == 1,
-                  ),
-                ),
-                SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedOption = 2;
-                    });
-                  },
-                  child: Option(
-                    imageAsset:
-                        'https://play-lh.googleusercontent.com/QNP0Aj2hyumAmYiWVAsJtY2LLTQnzHxdW7-DpwFUFNkPJjgRxi-BXg7A4yI6tgYKMeU',
-                    header: "GCash",
-                    isSelected: selectedOption == 2,
-                  ),
-                ),
-                SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedOption = 3;
-                    });
-                  },
-                  child: Option(
-                    imageAsset:
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZdGTop-kUyDci9KuNnZLLwTz3mYY0-Nh6ew&s',
-                    header: "Paymaya",
-                    isSelected: selectedOption == 3,
-                  ),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF015490),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Please complete all required fields.",
+                      style: TextStyle(fontSize: 18),
                     ),
-                    elevation: 2,
-                    shadowColor: Colors.black,
-                  ),
-                  onPressed: _isFormValid
-                      ? createPayment
-                      : null, // Disable button if form is invalid
-                  child: const Text("Confirm"),
+                    SizedBox(height: 20),
+                    Text("Phone number *"),
+                    SizedBox(height: 5),
+                    TextFormField(
+                      controller: phone,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        prefixText: '+63 ', // Ensures +63 is always visible
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(10),
+                        TextInputFormatter.withFunction(
+                          (oldValue, newValue) {
+                            String newText = newValue.text.replaceAll(' ', '');
+
+                            // Insert spaces after every 3 digits
+                            if (newText.length >= 4 && newText.length <= 6) {
+                              newText =
+                                  '${newText.substring(0, 3)} ${newText.substring(3)}';
+                            } else if (newText.length >= 7) {
+                              newText =
+                                  '${newText.substring(0, 3)} ${newText.substring(3, 6)} ${newText.substring(6)}';
+                            }
+
+                            return TextEditingValue(
+                              text: newText,
+                              selection: TextSelection.collapsed(
+                                  offset: newText.length),
+                            );
+                          },
+                        ),
+                      ],
+                      onChanged: (value) => setState(() {}),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Phone number cannot be empty';
+                        } else if (value.replaceAll(' ', '').length != 10) {
+                          return 'Phone number must be exactly 10 digits';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    Text("Amount *"),
+                    SizedBox(height: 5),
+                    TextFormField(
+                      controller: amount,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) =>
+                          setState(() {}), // Trigger re-build when text changes
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Amount cannot be empty';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    Text("Fund Transfer Method *"),
+                    SizedBox(height: 5),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedOption = 1;
+                        });
+                      },
+                      child: Option(
+                        imageAsset:
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHg6L0yf2DhQrkSIGWp0BnADyYi5OkOI2MPA&s',
+                        header: "Card",
+                        isSelected: selectedOption == 1,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedOption = 2;
+                        });
+                      },
+                      child: Option(
+                        imageAsset:
+                            'https://play-lh.googleusercontent.com/QNP0Aj2hyumAmYiWVAsJtY2LLTQnzHxdW7-DpwFUFNkPJjgRxi-BXg7A4yI6tgYKMeU',
+                        header: "GCash",
+                        isSelected: selectedOption == 2,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedOption = 3;
+                        });
+                      },
+                      child: Option(
+                        imageAsset:
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZdGTop-kUyDci9KuNnZLLwTz3mYY0-Nh6ew&s',
+                        header: "Paymaya",
+                        isSelected: selectedOption == 3,
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF015490),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        elevation: 2,
+                        shadowColor: Colors.black,
+                      ),
+                      onPressed: _isFormValid
+                          ? createPayment
+                          : null, // Disable button if form is invalid
+                      child: const Text("Confirm"),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+        ],
       ),
     );
   }
