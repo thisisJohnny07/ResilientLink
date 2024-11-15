@@ -28,7 +28,11 @@ class _OngoingDonationState extends State<OngoingAidDonation>
           .doc(donationId)
           .get();
 
-      return doc.get('title') as String;
+      // Check if 'isStart' is 1 before returning the title
+      if (doc.exists && doc.get('isStart') == 1) {
+        return doc.get('title') as String;
+      }
+      return ''; // Return an empty string if 'isStart' is not 1
     } catch (e) {
       print(e);
       return '';
@@ -86,54 +90,43 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                 child: Text('No active Donation'),
               );
             }
-            return ListView.builder(
-              itemCount: groupedDonations.length,
-              itemBuilder: (context, index) {
-                final donationDriveId = groupedDonations.keys.elementAt(index);
-                final donations = groupedDonations[donationDriveId]!;
 
-                // Use FutureBuilder to handle the asynchronous fetching of the title
-                return FutureBuilder<String>(
-                  future: _fetchDonationDrive(donationDriveId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Display an alternative value while loading
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 16.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'Loading donation title...',
-                          style: TextStyle(fontSize: 16, color: Colors.black54),
-                        ),
-                      );
-                    }
+            List<Widget> donationWidgets = [];
 
-                    if (snapshot.hasError) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 16.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'Failed to load title',
-                          style: TextStyle(fontSize: 16, color: Colors.red),
-                        ),
-                      );
-                    }
+            return FutureBuilder<List<String>>(
+              future: Future.wait(
+                  groupedDonations.keys.map((donationDriveId) async {
+                String title = await _fetchDonationDrive(donationDriveId);
+                return title.isNotEmpty ? title : '';
+              })),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                    if (snapshot.hasData) {
-                      String donationTitle =
-                          snapshot.data!; // Title has been fetched successfully
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
 
-                      return Container(
+                List<String> titles =
+                    snapshot.data!.where((title) => title.isNotEmpty).toList();
+
+                if (titles.isEmpty) {
+                  return const Center(
+                    child: Text('No active Donation'),
+                  );
+                }
+
+                for (int i = 0; i < titles.length; i++) {
+                  String title = titles[i];
+                  final donationDriveId = groupedDonations.keys.elementAt(i);
+                  final donations = groupedDonations[donationDriveId]!;
+
+                  if (title.isNotEmpty) {
+                    donationWidgets.add(
+                      Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 16.0),
                         decoration: BoxDecoration(
@@ -147,7 +140,7 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(10),
                                     topRight: Radius.circular(10)),
                                 gradient: const LinearGradient(
@@ -161,21 +154,19 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                                 ),
                               ),
                               padding: const EdgeInsets.all(10.0),
-                              child: Flexible(
-                                child: Text(
-                                  donationTitle,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black54,
-                                        offset: Offset(1, 1),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
+                              child: Text(
+                                title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black54,
+                                      offset: Offset(1, 1),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -195,13 +186,13 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.all(10),
-                                    margin: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.all(10),
+                                    margin: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 10),
                                     decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: Colors.black12),
-                                        borderRadius: BorderRadius.circular(5)),
+                                      border: Border.all(color: Colors.black12),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
                                     child: Column(
                                       children: [
                                         Row(
@@ -210,27 +201,23 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                                               GestureDetector(
                                                 onTap: () {
                                                   showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          QrDialogBox(
-                                                            image: donation[
-                                                                'qrCode'],
-                                                          ));
+                                                    context: context,
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        QrDialogBox(
+                                                      image: donation['qrCode'],
+                                                    ),
+                                                  );
                                                 },
                                                 child: Image.network(
                                                   donation['qrCode'],
                                                   height: 50,
                                                 ),
-                                              )
-                                            else
-                                              SizedBox(),
-                                            SizedBox(width: 10),
+                                              ),
+                                            const SizedBox(width: 10),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   formattedDate,
@@ -261,9 +248,9 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                                         Progress(
                                           status: donation['status'],
                                         ),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                         Items(donationId: documentId),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -294,33 +281,35 @@ class _OngoingDonationState extends State<OngoingAidDonation>
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: [
+                                            children: const [
                                               Icon(Icons.pin_drop),
-                                              const Text("Navigate Drop Off"),
+                                              Text("Navigate Drop Off"),
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                       ],
                                     ),
-                                  )
+                                  ),
                                 ],
                               );
                             }).toList(),
                           ],
                         ),
-                      );
-                    }
+                      ),
+                    );
+                  }
+                }
 
-                    return const Text('No title available'); // Fallback case
-                  },
+                return ListView(
+                  children: donationWidgets,
                 );
               },
             );
           }
 
           return const Center(
-            child: Text('No Donation Drive posted'),
+            child: Text('No active Donation'),
           );
         },
       ),

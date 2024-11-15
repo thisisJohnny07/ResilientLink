@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:resilientlink/Widget/mov_dialog_box.dart';
 import 'package:resilientlink/Widget/rate_donation_drive.dart';
 
 class ToRate extends StatefulWidget {
@@ -189,40 +190,68 @@ class _ToRateState extends State<ToRate> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Center(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color(0xFF015490),
-                                          foregroundColor: Colors.white,
-                                          minimumSize:
-                                              const Size(double.infinity, 50),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          elevation: 2,
-                                          shadowColor: Colors.black,
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Colors.black,
+                                        minimumSize: const Size(150, 50),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                         ),
-                                        onPressed: () async {
-                                          await showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return RateDonationDrive(
-                                                    donationDriveId:
-                                                        donationDriveId);
-                                              });
-                                          setState(() {});
-                                        },
-                                        child: const Text("rate"),
+                                        elevation: 2,
+                                        shadowColor: Colors.black,
                                       ),
+                                      onPressed: () async {
+                                        await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return MovDialogBox(
+                                                donationDriveId:
+                                                    donationDriveId);
+                                          },
+                                        );
+                                        setState(() {});
+                                      },
+                                      child: const Text("mov"),
+                                    ),
+                                    const SizedBox(
+                                        width: 10), // Space between the buttons
+                                    // Second Button: "rate"
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xFF015490),
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size(150,
+                                            50), // Same fixed width as the first button
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        elevation: 2,
+                                        shadowColor: Colors.black,
+                                      ),
+                                      onPressed: () async {
+                                        await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return RateDonationDrive(
+                                                donationDriveId:
+                                                    donationDriveId);
+                                          },
+                                        );
+                                        setState(() {});
+                                      },
+                                      child: const Text("rate"),
                                     ),
                                   ],
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         );

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resilientlink/pages/completed_donation_drive_details.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AllEndedDonationDrive extends StatefulWidget {
   const AllEndedDonationDrive({super.key});
@@ -197,12 +198,22 @@ class _AllEndedDonationDriveState extends State<AllEndedDonationDrive> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const Positioned(
+                                      Positioned(
                                         top: 8,
                                         right: 8,
-                                        child: Icon(
-                                          Icons.share,
-                                          color: Colors.white,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            final url = "myapp://example.com";
+                                            try {
+                                              await Share.share(url);
+                                            } catch (e) {
+                                              print("Error sharing: $e");
+                                            }
+                                          },
+                                          child: Icon(
+                                            Icons.share,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ],

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resilientlink/pages/donation_option.dart';
 import 'package:resilientlink/pages/map.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DonationDriveDetails extends StatefulWidget {
   final String donationId;
@@ -178,12 +179,22 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   top: 45,
                   right: 24,
-                  child: Icon(
-                    Icons.share,
-                    color: Colors.white,
+                  child: GestureDetector(
+                    onTap: () async {
+                      final url = "myapp://example.com";
+                      try {
+                        await Share.share(url);
+                      } catch (e) {
+                        print("Error sharing: $e");
+                      }
+                    },
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
@@ -202,7 +213,7 @@ class _DonationDriveDetailsState extends State<DonationDriveDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "PROPONENT: ${donationDrive?['proponent'] ?? 'Unknown'}",
+                      "BENEFICIARY: ${donationDrive?['proponent'] ?? 'Unknown'}",
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

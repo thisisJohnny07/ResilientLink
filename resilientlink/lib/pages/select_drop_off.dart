@@ -60,6 +60,7 @@ class _MapsState extends State<SelectDropOff> {
                 _selectedMarkerId = doc.id;
               });
             },
+            infoWindow: InfoWindow(title: doc['exactAdress']),
           );
         }).toSet();
         _isLoading = false;

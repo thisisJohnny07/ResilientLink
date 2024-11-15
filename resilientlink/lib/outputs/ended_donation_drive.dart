@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resilientlink/pages/all_ended_donation_drive.dart';
 import 'package:resilientlink/pages/completed_donation_drive_details.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EndedDonationDrive extends StatelessWidget {
   const EndedDonationDrive({super.key});
@@ -219,12 +220,22 @@ class EndedDonationDrive extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    const Positioned(
+                                    Positioned(
                                       top: 8,
                                       right: 8,
-                                      child: Icon(
-                                        Icons.share,
-                                        color: Colors.white,
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          final url = "myapp://example.com";
+                                          try {
+                                            await Share.share(url);
+                                          } catch (e) {
+                                            print("Error sharing: $e");
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.share,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ],

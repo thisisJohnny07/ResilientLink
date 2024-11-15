@@ -112,7 +112,7 @@ class _RateDonationDriveState extends State<RateDonationDrive> {
       await createCertificate(user?.displayName ?? 'Donor');
 
       // Close the dialog after certificate generation
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Ratings()));
       setState(() {
         _isLoading = false;
@@ -198,7 +198,7 @@ class _RateDonationDriveState extends State<RateDonationDrive> {
                     ]),
                   ),
                   pw.Text(
-                    'In grateful recognition of your generous support during the donation drive for the victims of ${donationDrive?['title']} on $formattedDate.\n'
+                    'In grateful recognition of your generous support during the ${donationDrive?['title']} on $formattedDate.\n'
                     'Your kindness has brought hope and resilience to those in need, making a meaningful impact on the community.',
                     style: const pw.TextStyle(fontSize: 12),
                     textAlign: pw.TextAlign.center,

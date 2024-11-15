@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resilientlink/pages/donation_drive_details.dart';
 import 'package:resilientlink/pages/donation_option.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AllCurrentDonationDrive extends StatefulWidget {
   const AllCurrentDonationDrive({super.key});
@@ -23,7 +24,7 @@ class _AllCurrentDonationDriveState extends State<AllCurrentDonationDrive> {
       final aidSnapshot = await FirebaseFirestore.instance
           .collection('aid_donation')
           .where('donationDriveId', isEqualTo: donationDriveId)
-          .where('status', whereIn: [1, 2]).get();
+          .get();
 
       final moneySnapshot = await FirebaseFirestore.instance
           .collection('money_donation')
@@ -197,12 +198,23 @@ class _AllCurrentDonationDriveState extends State<AllCurrentDonationDrive> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const Positioned(
+                                          Positioned(
                                             top: 8,
                                             right: 8,
-                                            child: Icon(
-                                              Icons.share,
-                                              color: Colors.white,
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                final url =
+                                                    "myapp://example.com";
+                                                try {
+                                                  await Share.share(url);
+                                                } catch (e) {
+                                                  print("Error sharing: $e");
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.share,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ],
